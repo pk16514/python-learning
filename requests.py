@@ -15,10 +15,6 @@ LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 VOWELS  = 'AEIOU'
 VOWEL_COST  = 250
 
-VOWEL_COST = 250
-LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-VOWELS = 'AEIOU'
-
 #from random import randrange
 #from random import randint
 
@@ -50,16 +46,14 @@ class WOFPlayer:
 
 class WOFHumanPlayer(WOFPlayer):
     def getMove(self, category, obscuredPhrase, guessed):
-        user_inp = input("{} has ${}\nCategory: {}\nPhrase: {}\nGuessed: {}\nGuess a letter, phrase, or type 'exit' or 'pass':".format(self.name, self.prizeMoney, category, obscuredPhrase, guessed))
-        print(user_inp)
+        user_inp = input("\n{} has ${}\n\nCategory: {}\nPhrase: {}\nGuessed: {}\n\nGuess a letter, phrase, or type 'exit' or 'pass':".format(self.name, self.prizeMoney, category, obscuredPhrase, guessed))
+        return user_inp
 
 class WOFComputerPlayer(WOFPlayer):
     SORTED_FREQUENCIES = 'ZQXJKVBPYGFWMUCLDRHSNIOATE'
     def __init__(self, name, difficulty):
-        self.name = name
+        super().__init__(name)
         self.difficulty = difficulty
-        self.prizes = []
-        self.prizeMoney = 0
 
     def smartCoinFlip(self):
         rnd_num = random.randint(1, 10)
@@ -152,9 +146,9 @@ def obscurePhrase(phrase, guessed):
 # Returns a string representing the current state of the game
 def showBoard(category, obscuredPhrase, guessed):
     return """
-Category: {}
-Phrase:   {}
-Guessed:  {}""".format(category, obscuredPhrase, ', '.join(sorted(guessed)))
+    Category: {}
+    Phrase:   {}
+    Guessed:  {}""".format(category, obscuredPhrase, ', '.join(sorted(guessed)))
 
 # GAME LOGIC CODE
 print('='*15)
@@ -162,15 +156,15 @@ print('WHEEL OF PYTHON')
 print('='*15)
 print('')
 
-num_human = getNumberBetween('How many human players?', 0, 10)
-num_computer = getNumberBetween('How many computer players?', 0, 10)
+num_human = getNumberBetween('How many human players? ', 0, 10)
+num_computer = getNumberBetween('How many computer players? ', 0, 10)
 
 # If there are computer players, ask how difficult they should be
 if num_computer >= 1:
-    difficulty = getNumberBetween('What difficulty for the computers? (1-10)', 1, 10)
+    difficulty = getNumberBetween('What difficulty for the computers? (1-10) ', 1, 10)
 
 # Create the player instances
-human_players = [WOFHumanPlayer(input('Enter the name for player #{}'.format(i+1))) for i in range(num_human)]
+human_players = [WOFHumanPlayer(input('Enter the name for player #{} '.format(i+1))) for i in range(num_human)]
 computer_players = [WOFComputerPlayer('Computer {}'.format(i+1), difficulty) for i in range(num_computer)]
 players = human_players + computer_players
 
@@ -201,9 +195,9 @@ while True:
     elif wheelPrize['type'] == 'cash':
         move = player.getMove(category, obscurePhrase(phrase, guessed), guessed)
         move = move.upper()
-        if move == 'exit':
+        if move == 'EXIT':
             break
-        elif move != 'pass':
+        elif move != 'PASS':
             if len(move) == 1:
                 if move not in LETTERS:
                     print('Guesses should be alphanumeric. Try again.')
